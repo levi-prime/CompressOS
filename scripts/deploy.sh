@@ -285,6 +285,8 @@ if [ -z "${cmd}" ] || [ "${cmd}" = "shell" ]; then
 	docker_cmd="run  --rm  builder"
 elif [ "${cmd}" = "build" ]; then
 	docker_cmd="run  --rm  builder  make  build-all  OUT=${OUT}"
+elif [ "${cmd}" = "pinecilv2" ]; then # This is to make building eaiser from a .bat file on windows. As arguments have a hard time being passed into WSL from windows terminal.
+    docker_cmd="run --rm builder sh -c 'cd source && ./build.sh -l EN -m Pinecilv2'"
 elif [ "${cmd}" = "clean" ]; then
 	docker  rmi  ironos-builder:latest
 	docker  system  prune  --filter label=ironos-builder:latest  --force
