@@ -1086,6 +1086,21 @@ def write_language(
     translation_common_text = get_translation_common_text(
         small_font_symbol_conversion_table, large_font_symbol_conversion_table
     )
+    
+    # Custom UI strings
+    custom_ui_strings = {
+    "CustomUITitle": "CUSTOM UI",
+    "CustomUIStatus": "STATUS",
+    "CustomUIMode": "MODE",
+    "CustomUISettings": "SETTINGS",
+    "CustomUIReady": "READY",
+    "CustomUIActive": "ACTIVE",
+}
+
+    for name, text in custom_ui_strings.items():
+    encoded = convert_string(small_font_symbol_conversion_table, text)
+    translation_common_text += f'const char {name}[] = "{encoded}";\n'
+
     f.write(translation_common_text)
     f.write(
         f"const bool HasFahrenheit = {('true' if lang.get('tempUnitFahrenheit', True) else 'false')};\n\n"

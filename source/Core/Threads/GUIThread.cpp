@@ -90,6 +90,8 @@ OperatingMode guiHandleDraw(void) {
     setBuzzer(false);
 #endif
 
+	newMode = OperatingMode::CustomUI; //Hopefully this works
+/*
     if (getSettingValue(SettingsOptions::AutoStartMode) == autoStartMode_t::SLEEP) {
       lastMovementTime = lastButtonTime = 0; // We mask the values so that sleep goes until user moves again or presses a button
       newMode                           = OperatingMode::Sleeping;
@@ -102,7 +104,7 @@ OperatingMode guiHandleDraw(void) {
     } else {
       newMode = OperatingMode::HomeScreen;
     }
-
+*/
     break;
   default:
     /* Fallthrough */
@@ -131,6 +133,9 @@ OperatingMode guiHandleDraw(void) {
   case OperatingMode::SettingsMenu:
     newMode = gui_SettingsMenu(buttons, &context);
     break;
+  case OperatingMode::CustomUI:
+    newMode = gui_CustomUI(buttons, &context);
+    break;
   case OperatingMode::InitialisationDone:
     newMode = handle_post_init_state();
     break;
@@ -157,6 +162,17 @@ void guiRenderLoop(void) {
     setBuzzer(false); // Ensure buzzer is stopped when changing screen
     context.viewEnterTime = xTaskGetTickCount();
     context.previousMode  = currentOperatingMode;
+	
+  if (currentOperatingMode == OperatingMode::StartupLogo) {
+    if (newMode != OperatingMode::CustomUI) {
+        if (getSettingValue(SettingsOptions::AutoStartMode)) {
+            context.previousMode = OperatingMode::Soldering;
+        } else {
+            newMode = OperatingMode::HomeScreen;
+        }
+    }
+}
+/*
     // If the previous mode is the startup logo; we dont want to return to it, but instead dispatch out to either home or soldering
     if (currentOperatingMode == OperatingMode::StartupLogo) {
       if (getSettingValue(SettingsOptions::AutoStartMode)) {
@@ -165,6 +181,7 @@ void guiRenderLoop(void) {
         newMode = OperatingMode::HomeScreen;
       }
     }
+*/
     memset(&context.scratch_state, 0, sizeof(context.scratch_state));
     currentOperatingMode = newMode;
   }

@@ -89,7 +89,8 @@ OperatingMode moveToNextEntry(guiContext *cxt) {
         // We are off the end of the menu now
         saveSettings();
         cxt->transitionMode = TransitionAnimation::Left;
-        return OperatingMode::HomeScreen;
+		return cxt->previousMode;
+        //return OperatingMode::HomeScreen;
       }
       // Check if visible
       if (rootSettingsMenu[*mainEntry].isVisible != nullptr && !rootSettingsMenu[*mainEntry].isVisible()) {
@@ -225,10 +226,11 @@ OperatingMode gui_SettingsMenu(const ButtonState buttons, guiContext *cxt) {
     (*autoRepeatTimer)        = 0; // reset acceleration
     break;
   case BUTTON_BOTH:
-    if (*subEntry == 0) {
-      saveSettings();
-      cxt->transitionMode = TransitionAnimation::Left;
-      return OperatingMode::HomeScreen;
+    if (*subEntry == 0) { //changed for custom UI elements
+    saveSettings();
+    cxt->transitionMode = TransitionAnimation::Left;
+    return cxt->previousMode;
+    //return OperatingMode::HomeScreen;
     } else {
       cxt->transitionMode = TransitionAnimation::Left;
       *subEntry           = 0;
